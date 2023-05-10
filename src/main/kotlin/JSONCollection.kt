@@ -1,3 +1,4 @@
+import java.lang.StringBuilder
 import kotlin.reflect.full.isSuperclassOf
 
 class JSONCollection(col: Collection<*>) : JSONElement{
@@ -31,7 +32,21 @@ class JSONCollection(col: Collection<*>) : JSONElement{
         }
     }
 
+    private fun <T> iteratePrint(col: Iterable<T>): String{
+        val iterator: Iterator<T> = col.iterator()
+        val str = StringBuilder().append("[")
+        while(iterator.hasNext()) {
+            val next = iterator.next()
+            if(!iterator.hasNext()){
+                str.append(next.toString())
+            }else{
+                str.append(next.toString() + ", ")
+            }
+        }
+        return str.append("]").toString()
+    }
+
     override fun toString(): String {
-        return "to do"
+        return iteratePrint(value)
     }
 }

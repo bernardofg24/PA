@@ -5,10 +5,10 @@ import kotlin.reflect.full.isSuperclassOf
 class JSONObj(obj: Any) : JSONElement{
     val props = LinkedHashMap<String, JSONElement>()
 
-    private val types = listOf("Number", "String", "Boolean", "Char", "Array", "Collection", "Map", "Enum")
+    private val types = listOf("String", "Boolean", "Char", "Array", "Map", "Enum")
 
     init{
-        require(obj::class.simpleName !in types)
+        require(obj::class.simpleName !in types && !Number::class.isSuperclassOf(obj::class) && !Collection::class.isSuperclassOf(obj::class))
         val p = obj::class.declaredMemberProperties.associate { Pair(it.name, it.call(obj)) }
         for(e in p.entries){
             when(e.value!!::class.simpleName){
@@ -32,10 +32,14 @@ class JSONObj(obj: Any) : JSONElement{
     }
 
     override fun toString(): String {
-        val str = StringBuilder()
+        val str = StringBuilder().append("{")
         for(e in props.entries){
-            str.append("\"" + e.key + "\": " + e.value.toString() + "\n")
+            if(props.keys.indexOf(e.key) != props.size - 1){
+                str.append("\"" + e.key + "\": " + e.value.toString() + ", ")
+            }else{
+                str.append("\"" + e.key + "\": " + e.value.toString())
+            }
         }
-        return str.toString()
+        return str.append("}").toString()
     }
 }
