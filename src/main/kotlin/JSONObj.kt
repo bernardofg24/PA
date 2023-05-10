@@ -16,12 +16,13 @@ class JSONObj(obj: Any) : JSONElement{
                 Boolean::class.simpleName -> props.put(e.key, JSONBoolean(e.value as Boolean))
                 Char::class.simpleName -> props.put(e.key, JSONChar(e.value as Char))
                 Array::class.simpleName -> props.put(e.key, JSONArray(e.value as Array<*>))
-                Collection::class.simpleName -> props.put(e.key, JSONCollection(e.value as Collection<*>))
                 Map::class.simpleName -> props.put(e.key, JSONMap(e.value as Map<*, *>))
                 Enum::class.simpleName -> props.put(e.key, JSONEnum(e.value as Enum<*>))
                 else -> {
                     if(Number::class.isSuperclassOf(e.value!!::class)){
                         props.put(e.key, JSONNumber(e.value as Number))
+                    }else if(Collection::class.isSuperclassOf(e.value!!::class)){
+                        props.put(e.key, JSONCollection(e.value as Collection<*>))
                     }else{
                         props.put(e.key, JSONObj(e.value!!))
                     }
