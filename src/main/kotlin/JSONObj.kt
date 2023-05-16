@@ -5,10 +5,11 @@ import kotlin.reflect.full.isSuperclassOf
 class JSONObj(obj: Any) : JSONElement{
     val props = LinkedHashMap<String, JSONElement>()
 
-    private val types = listOf("String", "Boolean", "Char", "Array", "Map", "Enum")
+    private val types = listOf("String", "Boolean", "Char", "Array")
 
     init{
-        require(obj::class.simpleName !in types && !Number::class.isSuperclassOf(obj::class) && !Collection::class.isSuperclassOf(obj::class))
+        require(obj::class.simpleName !in types && !Number::class.isSuperclassOf(obj::class) && !Collection::class.isSuperclassOf(obj::class)
+                && !Map::class.isSuperclassOf(obj::class) && !Enum::class.isSuperclassOf(obj::class))
         val p = obj::class.declaredMemberProperties.associate { Pair(it.name, it.call(obj)) }
         for(e in p.entries){
             when(e.value!!::class.simpleName){
@@ -16,13 +17,15 @@ class JSONObj(obj: Any) : JSONElement{
                 Boolean::class.simpleName -> props.put(e.key, JSONBoolean(e.value as Boolean))
                 Char::class.simpleName -> props.put(e.key, JSONChar(e.value as Char))
                 Array::class.simpleName -> props.put(e.key, JSONArray(e.value as Array<*>))
-                Map::class.simpleName -> props.put(e.key, JSONMap(e.value as Map<*, *>))
-                Enum::class.simpleName -> props.put(e.key, JSONEnum(e.value as Enum<*>))
                 else -> {
                     if(Number::class.isSuperclassOf(e.value!!::class)){
                         props.put(e.key, JSONNumber(e.value as Number))
-                    }else if(Collection::class.isSuperclassOf(e.value!!::class)){
+                    }else if(Collection::class.isSuperclassOf(e.value!!::class)) {
                         props.put(e.key, JSONCollection(e.value as Collection<*>))
+                    }else if(Map::class.isSuperclassOf(e.value!!::class)){
+                        props.put(e.key, JSONMap(e.value as Map<*, *>))
+                    }else if(Enum::class.isSuperclassOf(e.value!!::class)){
+                        props.put(e.key, JSONEnum(e.value as Enum<*>))
                     }else{
                         props.put(e.key, JSONObj(e.value!!))
                     }

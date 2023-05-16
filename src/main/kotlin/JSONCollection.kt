@@ -17,13 +17,15 @@ class JSONCollection(col: Collection<*>) : JSONElement{
                 Boolean::class.simpleName -> value.add(JSONBoolean(next as Boolean))
                 Char::class.simpleName -> value.add(JSONChar(next as Char))
                 Array::class.simpleName -> value.add(JSONArray(next as Array<*>))
-                Map::class.simpleName -> value.add(JSONMap(next as Map<*, *>))
-                Enum::class.simpleName -> value.add(JSONEnum(next as Enum<*>))
                 else -> {
                     if(Number::class.isSuperclassOf(next!!::class)){
                         value.add(JSONNumber(next as Number))
                     }else if(Collection::class.isSuperclassOf(next!!::class)){
                         value.add(JSONCollection(next as Collection<*>))
+                    }else if(Map::class.isSuperclassOf(next!!::class)){
+                        value.add(JSONMap(next as Map<*, *>))
+                    }else if(Enum::class.isSuperclassOf(next!!::class)){
+                        value.add(JSONEnum(next as Enum<*>))
                     }else{
                         value.add(JSONObj(next))
                     }

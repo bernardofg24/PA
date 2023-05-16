@@ -13,15 +13,15 @@ class JSONArray(arr: Array<*>) : JSONElement{
             arr.forEach { value.add(JSONChar(it as Char)) }
         }else if(arr.isArrayOf<Array<*>>()){
             arr.forEach { value.add(JSONArray(it as Array<*>)) }
-        }else if(arr.isArrayOf<Map<*, *>>()){
-            arr.forEach { value.add(JSONMap(it as Map<*, *>)) }
-        }else if(arr.isArrayOf<Enum<*>>()){
-            arr.forEach { value.add(JSONEnum(it as Enum<*>)) }
         }else{
             if(Number::class.isSuperclassOf(arr.first()!!::class)){
                 arr.forEach { value.add(JSONNumber(it as Number)) }
             }else if(Collection::class.isSuperclassOf(arr.first()!!::class)){
                 arr.forEach { value.add(JSONCollection(it as Collection<*>)) }
+            }else if(Map::class.isSuperclassOf(arr.first()!!::class)){
+                arr.forEach { value.add(JSONMap(it as Map<*, *>)) }
+            }else if(Enum::class.isSuperclassOf(arr.first()!!::class)){
+                arr.forEach { value.add(JSONEnum(it as Enum<*>)) }
             }else{
                 arr.forEach { value.add(JSONObj(it!!)) }
             }

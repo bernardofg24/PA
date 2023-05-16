@@ -1,5 +1,7 @@
-data class JSONEnum(val value: Enum<*>) : JSONElement{
+class JSONEnum(enum: Enum<*>) : JSONElement{
+    val value = enum.name
+
     override fun toString(): String {
-        return value.toString()
+        return "\"" + value + "\""
     }
 }
