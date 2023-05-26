@@ -1,4 +1,4 @@
-class UC(uc: String, ects: Number, data: Number?,  listaInscritos: List<inscritos>){
+class UC(uc: String, ects: Number, data: String,  listaInscritos: List<inscritos>){
     val uc = uc
     val ects = ects
     val data = data
