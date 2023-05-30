@@ -1,7 +1,7 @@
 import kotlin.reflect.full.isSuperclassOf
 
 class JSONCollection(col: Collection<*>) : JSONElement{
-    val value = mutableListOf<JSONElement>()
+    override val value = mutableListOf<JSONElement>()
 
     init{
         iterateInit(col)

@@ -1,26 +1,26 @@
 import kotlin.reflect.full.isSuperclassOf
 
 class JSONMap(map: Map<*, *>) : JSONElement{
-    val value = LinkedHashMap<String, JSONElement>()
+    override val value = LinkedHashMap<String, JSONElement>()
 
     init{
         map.entries.forEach {
             when(it.value){
-                is String -> value.put(it.key.toString(), JSONString(it.value as String))
-                is Boolean -> value.put(it.key.toString(), JSONBoolean(it.value as Boolean))
-                is Char -> value.put(it.key.toString(), JSONChar(it.value as Char))
-                is Array<*> -> value.put(it.key.toString(), JSONArray(it.value as Array<*>))
+                is String -> value[it.key.toString()] = JSONString(it.value as String)
+                is Boolean -> value[it.key.toString()] = JSONBoolean(it.value as Boolean)
+                is Char -> value[it.key.toString()] = JSONChar(it.value as Char)
+                is Array<*> -> value[it.key.toString()] = JSONArray(it.value as Array<*>)
                 else -> {
                     if(Number::class.isSuperclassOf(it.value!!::class)){
-                        value.put(it.key.toString(), JSONNumber(it.value as Number))
+                        value[it.key.toString()] = JSONNumber(it.value as Number)
                     }else if(Collection::class.isSuperclassOf(it.value!!::class)){
-                        value.put(it.key.toString(), JSONCollection(it.value as Collection<*>))
+                        value[it.key.toString()] = JSONCollection(it.value as Collection<*>)
                     }else if(Map::class.isSuperclassOf(it.value!!::class)){
-                        value.put(it.key.toString(), JSONMap(it.value as Map<*, *>))
+                        value[it.key.toString()] = JSONMap(it.value as Map<*, *>)
                     }else if(Enum::class.isSuperclassOf(it.value!!::class)){
-                        value.put(it.key.toString(), JSONEnum(it.value as Enum<*>))
+                        value[it.key.toString()] = JSONEnum(it.value as Enum<*>)
                     }else{
-                        value.put(it.key.toString(), JSONObj(it.value!!))
+                        value[it.key.toString()] = JSONObj(it.value!!)
                     }
                 }
             }

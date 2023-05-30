@@ -1,7 +1,7 @@
 import kotlin.reflect.full.isSuperclassOf
 
 class JSONArray(arr: Array<*>) : JSONElement{
-    val value = arrayListOf<JSONElement>()
+    override val value = arrayListOf<JSONElement>()
 
     init{
         if(arr.isArrayOf<String>()){
