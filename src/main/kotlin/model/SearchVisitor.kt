@@ -1,3 +1,5 @@
+package model
+
 class SearchVisitor(vararg term: String, private val flag: Boolean) : Visitor {
     private val terms = term.toList()
     val values = LinkedHashMap<String, MutableList<Any>>()

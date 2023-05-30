@@ -1,3 +1,5 @@
+package model
+
 import kotlin.reflect.KClass
 
 class ValidationVisitor(private val prop: String, private val clazz: KClass<*>) : Visitor {

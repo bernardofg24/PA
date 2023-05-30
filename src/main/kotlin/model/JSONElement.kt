@@ -1,3 +1,5 @@
+package model
+
 interface JSONElement {
     val value: Any
 

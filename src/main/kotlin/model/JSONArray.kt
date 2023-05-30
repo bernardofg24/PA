@@ -1,6 +1,8 @@
+package model
+
 import kotlin.reflect.full.isSuperclassOf
 
-class JSONArray(arr: Array<*>) : JSONElement{
+class JSONArray(arr: Array<*>) : JSONElement {
     override val value = arrayListOf<JSONElement>()
 
     init{

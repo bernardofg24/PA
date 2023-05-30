@@ -1,3 +1,5 @@
+package model
+
 interface Visitor {
     fun visit(o: JSONObj){}
 

@@ -1,6 +1,8 @@
+package model
+
 import kotlin.reflect.full.isSuperclassOf
 
-class JSONMap(map: Map<*, *>) : JSONElement{
+class JSONMap(map: Map<*, *>) : JSONElement {
     override val value = LinkedHashMap<String, JSONElement>()
 
     init{

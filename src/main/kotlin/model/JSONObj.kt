@@ -1,8 +1,10 @@
+package model
+
 import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.full.hasAnnotation
 import kotlin.reflect.full.isSuperclassOf
 
-class JSONObj(val obj: Any) : JSONElement{
+class JSONObj(val obj: Any) : JSONElement {
     override val value = LinkedHashMap<String, JSONElement?>()
     private val types = listOf(String::class, Boolean::class, Char::class, Array::class)
 
