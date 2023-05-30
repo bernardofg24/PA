@@ -1,33 +1,43 @@
-import java.lang.StringBuilder
 import kotlin.reflect.full.declaredMemberProperties
+import kotlin.reflect.full.hasAnnotation
 import kotlin.reflect.full.isSuperclassOf
 
-class JSONObj(obj: Any) : JSONElement{
-    val props = LinkedHashMap<String, JSONElement>()
-
-    private val types = listOf("String", "Boolean", "Char", "Array")
+class JSONObj(val obj: Any) : JSONElement{
+    override val value = LinkedHashMap<String, JSONElement?>()
+    private val types = listOf(String::class, Boolean::class, Char::class, Array::class)
 
     init{
-        require(obj::class.simpleName !in types && !Number::class.isSuperclassOf(obj::class) && !Collection::class.isSuperclassOf(obj::class)
+        require(obj::class !in types && !Number::class.isSuperclassOf(obj::class) && !Collection::class.isSuperclassOf(obj::class)
                 && !Map::class.isSuperclassOf(obj::class) && !Enum::class.isSuperclassOf(obj::class))
-        val p = obj::class.declaredMemberProperties.associate { Pair(it.name, it.call(obj)) }
-        for(e in p.entries){
-            when(e.value!!::class.simpleName){
-                String::class.simpleName -> props.put(e.key, JSONString(e.value as String))
-                Boolean::class.simpleName -> props.put(e.key, JSONBoolean(e.value as Boolean))
-                Char::class.simpleName -> props.put(e.key, JSONChar(e.value as Char))
-                Array::class.simpleName -> props.put(e.key, JSONArray(e.value as Array<*>))
+        val p = obj::class.declaredMemberProperties.associateBy { it.name }.toMutableMap()
+        p.entries.forEach {
+            if(it.value.hasAnnotation<DoNotInitiate>()){
+                p.remove(it.key)
+            }
+        }
+        p.entries.forEach {
+            var inst = it.value.call(obj)
+            if(it.value.hasAnnotation<ToString>()){
+                inst = it.value.call(obj).toString()
+            }
+            when(inst){
+                is String -> value[it.key] = JSONString(inst)
+                is Boolean -> value[it.key] = JSONBoolean(inst)
+                is Char -> value[it.key] = JSONChar(inst)
+                is Array<*> -> value[it.key] = JSONArray(inst)
                 else -> {
-                    if(Number::class.isSuperclassOf(e.value!!::class)){
-                        props.put(e.key, JSONNumber(e.value as Number))
-                    }else if(Collection::class.isSuperclassOf(e.value!!::class)) {
-                        props.put(e.key, JSONCollection(e.value as Collection<*>))
-                    }else if(Map::class.isSuperclassOf(e.value!!::class)){
-                        props.put(e.key, JSONMap(e.value as Map<*, *>))
-                    }else if(Enum::class.isSuperclassOf(e.value!!::class)){
-                        props.put(e.key, JSONEnum(e.value as Enum<*>))
+                    if(inst == null){
+                        value[it.key] = inst
+                    }else if(Number::class.isSuperclassOf(inst::class)){
+                        value[it.key] = JSONNumber(inst as Number)
+                    }else if(Collection::class.isSuperclassOf(inst::class)) {
+                        value[it.key] = JSONCollection(inst as Collection<*>)
+                    }else if(Map::class.isSuperclassOf(inst::class)){
+                        value[it.key] = JSONMap(inst as Map<*, *>)
+                    }else if(Enum::class.isSuperclassOf(inst::class)){
+                        value[it.key] = JSONEnum(inst as Enum<*>)
                     }else{
-                        props.put(e.key, JSONObj(e.value!!))
+                        value[it.key] = JSONObj(inst)
                     }
                 }
             }
@@ -36,13 +46,25 @@ class JSONObj(obj: Any) : JSONElement{
 
     override fun toString(): String {
         val str = StringBuilder().append("{")
-        for(e in props.entries){
-            if(props.keys.indexOf(e.key) != props.size - 1){
-                str.append("\"" + e.key + "\": " + e.value.toString() + ", ")
+        value.entries.forEach {
+            if(value.keys.indexOf(it.key) != value.size - 1){
+                if(it.value == null){
+                    str.append("\"" + it.key + "\": " + null + ", ")
+                }else {
+                    str.append("\"" + it.key + "\": " + it.value.toString() + ", ")
+                }
             }else{
-                str.append("\"" + e.key + "\": " + e.value.toString())
+                if(it.value == null){
+                    str.append("\"" + it.key + "\": " + null)
+                }else{
+                    str.append("\"" + it.key + "\": " + it.value.toString())
+                }
             }
         }
         return str.append("}").toString()
+    }
+
+    override fun accept(v: Visitor) {
+        v.visit(this)
     }
 }

@@ -1,8 +1,7 @@
-import java.lang.StringBuilder
 import kotlin.reflect.full.isSuperclassOf
 
 class JSONArray(arr: Array<*>) : JSONElement{
-    val value = arrayListOf<JSONElement>()
+    override val value = arrayListOf<JSONElement>()
 
     init{
         if(arr.isArrayOf<String>()){
@@ -31,11 +30,11 @@ class JSONArray(arr: Array<*>) : JSONElement{
     override fun toString(): String {
         val str = StringBuilder().append("[")
         var n = 0
-        for(v in value){
+        value.forEach {
             if(n == value.lastIndex){
-                str.append(v.toString())
+                str.append(it.toString())
             }else{
-                str.append(v.toString() + ", ")
+                str.append(it.toString() + ", ")
             }
             n++
         }
