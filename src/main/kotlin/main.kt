@@ -3,6 +3,7 @@ fun main(){
     val obj = Teste("adeus", 42.7, listOf("asd", "fgh"))
     val teste = Teste2("ola", 24, obj)
     val json = JSONObj(teste)
-    val vis = ValidationVisitor("num", Int::class)
-    print(json.toString())
+    val vis = SearchVisitor("num", "name", flag=false)
+    json.accept(vis)
+    println(vis.values["num"]?.first() as Double + 2)
 }
