@@ -1,4 +1,5 @@
-class SearchVisitor(private val terms: List<String>, private val flag: Boolean) : Visitor {
+class SearchVisitor(vararg term: String, private val flag: Boolean) : Visitor {
+    private val terms = term.toList()
     val values = LinkedHashMap<String, MutableList<Any>>()
     private var key = ""
 
