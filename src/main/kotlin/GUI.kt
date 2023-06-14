@@ -1,11 +1,11 @@
 
-import java.awt.CardLayout
 import java.awt.Component
 import java.awt.Dimension
 import java.awt.GridLayout
-import java.awt.event.*
+import java.awt.event.FocusAdapter
+import java.awt.event.FocusEvent
 import javax.swing.*
-import javax.swing.text.BoxView
+
 
 fun main() {
     GUI().open()
@@ -48,15 +48,21 @@ class GUI {
             alignmentX = Component.LEFT_ALIGNMENT
             alignmentY = Component.TOP_ALIGNMENT
 
-            val UnidadeCurricular = UCWidget("UC","PA")
+            val UnidadeCurricular = UCWidget("UC ","PA")
             val bound = UnidadeCurricular.setBounds(20,5,450,50)
             add(UnidadeCurricular)
 
-            val creditos = creditosWidget("ECTS", 6.0)
+            val creditos = creditosWidget("ECTS ", 6.0)
             add(creditos)
 
-            val exame = exameWidget("exame","null")
+            val exame = exameWidget("exame ","null")
             add(exame)
+
+            val inscritos = inscritosWidget("inscritos ", inscritosCorpo(numeroInscritos("número ","11029"),
+                nomeInscritos("nome ","John Smith"),internacionalInscritos("internacional")))
+            add(inscritos)
+
+
         }
 
     fun UCWidget(keyUC:String, valueUC:String): JPanel=
@@ -73,7 +79,7 @@ class GUI {
 
             textUC.addFocusListener(object : FocusAdapter() {
                 override fun focusLost(e: FocusEvent) {
-                    val fList=valueUC !!!!
+                    val fList=valueUC
                 }
             })
 
@@ -92,7 +98,7 @@ class GUI {
 
             text.addFocusListener(object : FocusAdapter() {
                 override fun focusLost(e: FocusEvent) {
-                    val fList=valueCreditos !!!!
+                    val fList=valueCreditos
                 }
             })
 
@@ -112,21 +118,81 @@ class GUI {
 
             text.addFocusListener(object : FocusAdapter() {
                 override fun focusLost(e: FocusEvent) {
-                    val fList=valueExame !!!!
+                    val fList=valueExame
                 }
             })
 
             add(text)
         }
 
-    fun inscritosWidget(nomeinscritos: String, nomeKey: String, nomeValue:String,
-                        numeroKey: String,numeroValue: Number, internacionalKey: String, internacionalValue: Boolean): JPanel=
+    fun inscritosWidget(keyInscritos: String, inscritosCorpo: JPanel): JPanel=
         JPanel().apply{
             layout = BoxLayout(this, BoxLayout.X_AXIS)
             alignmentX = Component.RIGHT_ALIGNMENT
             alignmentY = Component.TOP_ALIGNMENT
-            add(JLabel(nomeinscritos))
+            add(JLabel(keyInscritos))
+            add(inscritosCorpo)
+
             //val textNom
 
         }
+
+    fun nomeInscritos(keyNome: String, valueNome:String): JPanel=
+        JPanel().apply {
+            /*layout = BoxLayout(this, BoxLayout.X_AXIS)
+            alignmentX = Component.RIGHT_ALIGNMENT
+            alignmentY = Component.TOP_ALIGNMENT*/
+
+
+            add(JLabel(keyNome))
+            val text = JTextField(""+valueNome)
+
+
+            text.addFocusListener(object : FocusAdapter() {
+                override fun focusLost(e: FocusEvent) {
+                    val fList=valueNome
+                }
+            })
+
+            add(text)
+        }
+
+    fun numeroInscritos(keyNumero: String, valueNumero:String): JPanel=
+        JPanel().apply {
+            /*layout = BoxLayout(this, BoxLayout.X_AXIS)
+            alignmentX = Component.CENTER_ALIGNMENT
+            alignmentY = Component.CENTER_ALIGNMENT*/
+
+
+            add(JLabel(keyNumero))
+            val text = JTextField(""+valueNumero)
+
+
+
+            text.addFocusListener(object : FocusAdapter() {
+                override fun focusLost(e: FocusEvent) {
+                    val fList=valueNumero
+                }
+            })
+
+            add(text)
+        }
+    fun internacionalInscritos(keyInternacional:String): JPanel=
+        JPanel().apply{
+            add(JLabel(keyInternacional))
+            val internacionalButton = JCheckBox("", true)
+            add(internacionalButton)
+
+        }
+    fun inscritosCorpo(numeroInscritos:JPanel,nomeInscritos:JPanel,internacionalInscritos:JPanel): JPanel=
+        JPanel().apply {
+            layout = BoxLayout(this, BoxLayout.X_AXIS)
+            alignmentX = Component.CENTER_ALIGNMENT
+            alignmentY = Component.CENTER_ALIGNMENT
+            add(numeroInscritos);
+            add(nomeInscritos);
+            add(internacionalInscritos);
+        }
+
+
 }
