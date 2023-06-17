@@ -1,3 +1,5 @@
+package model
+
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -15,9 +17,9 @@ fun firstTest() {
     val nome2 = "Julia Paiva"
     val inter2 = false
 
-    val inscrito1 = inscritos(numero1,nome1,inter1)
-    val inscrito2 = inscritos(numero2,nome2,inter2)
-    val listaInscritos = listOf<inscritos>(inscrito1,inscrito2)
+    val inscrito1 = Aluno(numero1,nome1,inter1)
+    val inscrito2 = Aluno(numero2,nome2,inter2)
+    val listaInscritos = listOf<Aluno>(inscrito1,inscrito2)
 
 
     val obj = UC("PA",6.0, current, listaInscritos)

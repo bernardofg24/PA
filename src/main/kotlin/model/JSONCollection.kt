@@ -1,8 +1,9 @@
-import java.lang.StringBuilder
+package model
+
 import kotlin.reflect.full.isSuperclassOf
 
-class JSONCollection(col: Collection<*>) : JSONElement{
-    val value = mutableListOf<JSONElement>()
+class JSONCollection(col: Collection<*>) : JSONElement {
+    override val value = mutableListOf<JSONElement>()
 
     init{
         iterateInit(col)
@@ -12,11 +13,11 @@ class JSONCollection(col: Collection<*>) : JSONElement{
         val iterator: Iterator<T> = col.iterator()
         while(iterator.hasNext()) {
             val next = iterator.next()
-            when(next!!::class.simpleName){
-                String::class.simpleName -> value.add(JSONString(next as String))
-                Boolean::class.simpleName -> value.add(JSONBoolean(next as Boolean))
-                Char::class.simpleName -> value.add(JSONChar(next as Char))
-                Array::class.simpleName -> value.add(JSONArray(next as Array<*>))
+            when(next){
+                is String -> value.add(JSONString(next as String))
+                is Boolean -> value.add(JSONBoolean(next as Boolean))
+                is Char -> value.add(JSONChar(next as Char))
+                is Array<*> -> value.add(JSONArray(next as Array<*>))
                 else -> {
                     if(Number::class.isSuperclassOf(next!!::class)){
                         value.add(JSONNumber(next as Number))
@@ -50,5 +51,9 @@ class JSONCollection(col: Collection<*>) : JSONElement{
 
     override fun toString(): String {
         return iteratePrint(value)
+    }
+
+    override fun accept(v: Visitor) {
+        v.visit(this)
     }
 }
