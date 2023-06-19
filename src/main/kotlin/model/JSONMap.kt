@@ -2,6 +2,7 @@ package model
 
 import kotlin.reflect.full.isSuperclassOf
 
+//clase de modelação de variáveis do tipo map presentes nos JSONs
 class JSONMap(map: Map<*, *>) : JSONElement {
     override val value = LinkedHashMap<String, JSONElement>()
 

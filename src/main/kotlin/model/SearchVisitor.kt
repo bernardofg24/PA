@@ -1,5 +1,7 @@
 package model
 
+//tipo de visitor que obtem e guarda todos os valores com determinado identificador
+
 class SearchVisitor(vararg term: String, private val flag: Boolean) : Visitor {
     private val terms = term.toList()
     val values = LinkedHashMap<String, MutableList<Any>>()

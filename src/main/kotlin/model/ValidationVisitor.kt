@@ -1,5 +1,8 @@
 package model
 
+//visitor de verificação: obdiência de determinadas regras:
+// como se as variáveis pertecentes à mesma propriedade têm a mesma estrutura
+
 import kotlin.reflect.KClass
 
 class ValidationVisitor(private val prop: String, private val clazz: KClass<*>) : Visitor {
