@@ -47,23 +47,23 @@ class JSONObj(val obj: Any) : JSONElement {
     }
 
     override fun toString(): String {
-        val str = StringBuilder().append("{")
+        val str = StringBuilder().append("{\n")
         value.entries.forEach {
             if(value.keys.indexOf(it.key) != value.size - 1){
                 if(it.value == null){
-                    str.append("\"" + it.key + "\": " + null + ", ")
+                    str.append(("\"" + it.key + "\" : " + null + ",").prependIndent("\t") + "\n")
                 }else {
-                    str.append("\"" + it.key + "\": " + it.value.toString() + ", ")
+                    str.append(("\"" + it.key + "\" : " + it.value.toString() + ",").prependIndent("\t") + "\n")
                 }
             }else{
                 if(it.value == null){
-                    str.append("\"" + it.key + "\": " + null)
+                    str.append(("\"" + it.key + "\" : " + null).prependIndent("\t"))
                 }else{
-                    str.append("\"" + it.key + "\": " + it.value.toString())
+                    str.append(("\"" + it.key + "\" : " + it.value.toString()).prependIndent("\t"))
                 }
             }
         }
-        return str.append("}").toString()
+        return str.append("\n}").toString()
     }
 
     override fun accept(v: Visitor) {

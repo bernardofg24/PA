@@ -30,16 +30,16 @@ class JSONArray(arr: Array<*>) : JSONElement {
     }
 
     override fun toString(): String {
-        val str = StringBuilder().append("[")
+        val str = StringBuilder().append("[\n")
         var n = 0
         value.forEach {
             if(n == value.lastIndex){
-                str.append(it.toString())
+                str.append(it.toString().prependIndent("\t"))
             }else{
-                str.append(it.toString() + ", ")
+                str.append((it.toString() + ",").prependIndent("\t") + "\n")
             }
             n++
         }
-        return str.append("]").toString()
+        return str.append("\n]").toString()
     }
 }

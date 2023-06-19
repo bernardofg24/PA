@@ -1,10 +1,10 @@
-import java.awt.CardLayout
+package gui
+
 import java.awt.Component
 import java.awt.Dimension
 import java.awt.GridLayout
 import java.awt.event.*
 import javax.swing.*
-import javax.swing.text.BoxView
 
 fun main() {
     GUI().open()
@@ -236,24 +236,24 @@ class GUI {
         }
 
     fun cursoWidget(keyCurso: String, valueCurso: String):JPanel=
-    JPanel().apply{
-        layout = BoxLayout(this, BoxLayout.X_AXIS)
-        alignmentX = Component.RIGHT_ALIGNMENT
-        alignmentY = Component.TOP_ALIGNMENT
+        JPanel().apply{
+            layout = BoxLayout(this, BoxLayout.X_AXIS)
+            alignmentX = Component.RIGHT_ALIGNMENT
+            alignmentY = Component.TOP_ALIGNMENT
 
 
-        add(JLabel(keyCurso))
-        val textCurso = JTextField(""+valueCurso)
+            add(JLabel(keyCurso))
+            val textCurso = JTextField(""+valueCurso)
 
-        textCurso.addFocusListener(object : FocusAdapter() {
-            override fun focusLost(e: FocusEvent) {
-                //val fList=valueCurso !!!!
-                println("perdeu foco: ${textCurso.text}")
-            }
-        })
+            textCurso.addFocusListener(object : FocusAdapter() {
+                override fun focusLost(e: FocusEvent) {
+                    //val fList=valueCurso !!!!
+                    println("perdeu foco: ${textCurso.text}")
+                }
+            })
 
-        add(textCurso)
-    }
+            add(textCurso)
+        }
 
 
 

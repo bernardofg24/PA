@@ -37,16 +37,16 @@ class JSONCollection(col: Collection<*>) : JSONElement {
 
     private fun <T> iteratePrint(col: Iterable<T>): String{
         val iterator: Iterator<T> = col.iterator()
-        val str = StringBuilder().append("[")
+        val str = StringBuilder().append("[\n")
         while(iterator.hasNext()) {
             val next = iterator.next()
             if(!iterator.hasNext()){
-                str.append(next.toString())
+                str.append(next.toString().prependIndent("\t"))
             }else{
-                str.append(next.toString() + ", ")
+                str.append((next.toString() + ",").prependIndent("\t") + "\n")
             }
         }
-        return str.append("]").toString()
+        return str.append("\n]").toString()
     }
 
     override fun toString(): String {
