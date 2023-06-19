@@ -20,7 +20,7 @@ fun firstTest() {
     val inscrito1 = Aluno(numero1,nome1,inter1)
     val inscrito2 = Aluno(numero2,nome2,inter2)
     val listaInscritos = listOf(inscrito1,inscrito2)
-    val listaCursos = listOf("MEI", "MIG")
+    val listaCursos = arrayOf("MEI", "MIG")
 
 
     val obj = UC("PA",6.0, current, listaInscritos, listaCursos)

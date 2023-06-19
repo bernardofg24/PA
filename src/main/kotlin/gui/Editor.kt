@@ -1,6 +1,6 @@
 package gui
 
-import model.JSONObj
+import model.*
 import java.awt.Component
 import java.awt.Dimension
 import java.awt.GridLayout
@@ -18,7 +18,7 @@ class Editor(model: JSONObj) {
 
         val left = JPanel()
         left.layout = GridLayout()
-        val scrollPane = JScrollPane(testPanel(model)).apply {
+        val scrollPane = JScrollPane(editPanel(model)).apply {
             horizontalScrollBarPolicy = JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS
             verticalScrollBarPolicy = JScrollPane.VERTICAL_SCROLLBAR_ALWAYS
         }
@@ -38,14 +38,14 @@ class Editor(model: JSONObj) {
         frame.isVisible = true
     }
 
-    fun testPanel(model: JSONObj): JPanel =
+    fun editPanel(model: JSONObj): JPanel =
         JPanel().apply {
             layout = BoxLayout(this, BoxLayout.Y_AXIS)
             alignmentX = Component.LEFT_ALIGNMENT
             alignmentY = Component.TOP_ALIGNMENT
 
             model.value.forEach {
-                add(testWidget(it.key, it.value.toString().replace("\n", "").replace("\t", "")))
+                add(propWidget(it.key, it.value!!))
             }
 
             // menu
@@ -56,7 +56,6 @@ class Editor(model: JSONObj) {
                         val add = JButton("add")
                         add.addActionListener {
                             val text = JOptionPane.showInputDialog("text")
-                            add(testWidget(text, "?"))
                             menu.isVisible = false
                             revalidate()
                             frame.repaint()
@@ -70,28 +69,54 @@ class Editor(model: JSONObj) {
                             revalidate()
                             frame.repaint()
                         }
-                        menu.add(add);
+                        menu.add(add)
                         menu.add(del)
-                        menu.show(this@apply, 100, 100);
+                        menu.show(this@apply, 100, 100)
                     }
                 }
             })
         }
 
 
-    fun testWidget(key: String, value: String): JPanel =
+    fun propWidget(key: String = "", value: JSONElement): JPanel =
         JPanel().apply {
             layout = BoxLayout(this, BoxLayout.X_AXIS)
             alignmentX = Component.LEFT_ALIGNMENT
             alignmentY = Component.TOP_ALIGNMENT
 
-            add(JLabel(key))
-            val text = JTextField(value)
-            text.addFocusListener(object : FocusAdapter() {
+            when(value){
+                is JSONBoolean -> add(JCheckBox(key, value.value))
+                is JSONCollection -> {
+                    add(JLabel(key))
+                    value.value.forEach {
+                        if(it is JSONObj){
+                            add(editPanel(it))
+                        }else{
+                            add(propWidget(value=it))
+                        }
+                    }
+                }
+                is JSONArray -> {
+                    add(JLabel(key))
+                    value.value.forEach {
+                        add(propWidget(value=it))
+                    }
+                }
+                is JSONMap -> {
+                    add(JLabel(key))
+                    value.value.forEach {
+                        add(propWidget(it.key, it.value))
+                    }
+                }
+                else -> {
+                    add(JLabel(key))
+                    add(JTextField(value.toString().replace("\"", "")))
+                }
+            }
+            /*text.addFocusListener(object : FocusAdapter() {
                 override fun focusLost(e: FocusEvent) {
                     println("perdeu foco: ${text.text}")
                 }
-            })
-            add(text)
+            })*/
         }
 }
