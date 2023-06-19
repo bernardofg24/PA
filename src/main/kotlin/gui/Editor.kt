@@ -4,13 +4,11 @@ import model.*
 import java.awt.Component
 import java.awt.Dimension
 import java.awt.GridLayout
-import java.awt.event.FocusAdapter
-import java.awt.event.FocusEvent
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import javax.swing.*
 
-class Editor(model: JSONObj) {
+class Editor(val model: JSONObj) {
     val frame = JFrame("JSON Object Editor").apply {
         defaultCloseOperation = JFrame.EXIT_ON_CLOSE
         layout = GridLayout(0, 2)
@@ -27,9 +25,7 @@ class Editor(model: JSONObj) {
 
         val right = JPanel()
         right.layout = GridLayout()
-        val srcArea = JTextArea()
-        srcArea.tabSize = 2
-        srcArea.text = model.toString()
+        val srcArea = TextAreaView(model)
         right.add(srcArea)
         add(right)
     }
@@ -45,7 +41,7 @@ class Editor(model: JSONObj) {
             alignmentY = Component.TOP_ALIGNMENT
 
             model.value.forEach {
-                add(propWidget(it.key, it.value!!))
+                add(propWidget(it.key))
             }
 
             // menu
@@ -78,41 +74,21 @@ class Editor(model: JSONObj) {
         }
 
 
-    fun propWidget(key: String = "", value: JSONElement): JPanel =
+    fun propWidget(prop: String): JPanel =
         JPanel().apply {
             layout = BoxLayout(this, BoxLayout.X_AXIS)
             alignmentX = Component.LEFT_ALIGNMENT
             alignmentY = Component.TOP_ALIGNMENT
 
-            when(value){
-                is JSONBoolean -> add(JCheckBox(key, value.value))
-                is JSONCollection -> {
-                    add(JLabel(key))
-                    value.value.forEach {
-                        if(it is JSONObj){
-                            add(editPanel(it))
-                        }else{
-                            add(propWidget(value=it))
-                        }
-                    }
+            add(JLabel(prop))
+            val field = FieldView(model, prop)
+            field.addObserver(object : FieldObserver{
+                override fun changeValue(prop: String, newValue: Any) {
+                    model.changeProp(prop, newValue)
                 }
-                is JSONArray -> {
-                    add(JLabel(key))
-                    value.value.forEach {
-                        add(propWidget(value=it))
-                    }
-                }
-                is JSONMap -> {
-                    add(JLabel(key))
-                    value.value.forEach {
-                        add(propWidget(it.key, it.value))
-                    }
-                }
-                else -> {
-                    add(JLabel(key))
-                    add(JTextField(value.toString().replace("\"", "")))
-                }
-            }
+            })
+            add(field)
+
             /*text.addFocusListener(object : FocusAdapter() {
                 override fun focusLost(e: FocusEvent) {
                     println("perdeu foco: ${text.text}")

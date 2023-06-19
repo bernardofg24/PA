@@ -8,6 +8,8 @@ class JSONObj(val obj: Any) : JSONElement {
     override val value = LinkedHashMap<String, JSONElement?>()
     private val types = listOf(String::class, Boolean::class, Char::class, Array::class)
 
+    private val observers: MutableList<JSONObserver> = mutableListOf()
+
     init{
         require(obj::class !in types && !Number::class.isSuperclassOf(obj::class) && !Collection::class.isSuperclassOf(obj::class)
                 && !Map::class.isSuperclassOf(obj::class) && !Enum::class.isSuperclassOf(obj::class))
@@ -68,5 +70,32 @@ class JSONObj(val obj: Any) : JSONElement {
 
     override fun accept(v: Visitor) {
         v.visit(this)
+    }
+
+    fun addObserver(observer: JSONObserver) = observers.add(observer)
+
+    fun changeProp(prop: String, newValue: Any){
+        when(newValue){
+            is String -> value[prop] = JSONString(newValue)
+            is Boolean -> value[prop] = JSONBoolean(newValue)
+            is Char -> value[prop] = JSONChar(newValue)
+            is Array<*> -> value[prop] = JSONArray(newValue)
+            else -> {
+                if(Number::class.isSuperclassOf(newValue::class)){
+                    value[prop] = JSONNumber(newValue as Number)
+                }else if(Collection::class.isSuperclassOf(newValue::class)) {
+                    value[prop] = JSONCollection(newValue as Collection<*>)
+                }else if(Map::class.isSuperclassOf(newValue::class)){
+                    value[prop] = JSONMap(newValue as Map<*, *>)
+                }else if(Enum::class.isSuperclassOf(newValue::class)){
+                    value[prop] = JSONEnum(newValue as Enum<*>)
+                }else{
+                    value[prop] = JSONObj(newValue)
+                }
+            }
+        }
+        observers.forEach {
+            it.propChanged()
+        }
     }
 }
