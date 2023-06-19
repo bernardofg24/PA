@@ -5,17 +5,17 @@ classes para os diferentes tipos de variáveis que o JSON poderia compreender, i
 enum, map, number e string. Todas as classes criadas foram nomeadas de "JSON" seguidas do tipo de variável em questão, 
 por exemplo "JSONBoolean". Estas serviram, nomeadamente, para serem moldadas e unidas num JSON object final, com o nome "JSONObj".
 
-De maneira a testar o código desenvolvido, foi criada o file "test.kt". Para isso, foram ainda criadas as classes "Aluno" 
-e "UC", de maneira a que o resultado final se assemelhasse ao exemplo dado no ununciado da primeira parte.
+De maneira a testar o código desenvolvido, foi criado o file "test.kt". Para isso, foram ainda criadas as classes "Aluno" 
+e "UC", de maneira a que o resultado final se assemelhasse ao exemplo dado no enunciado da primeira parte.
 
 Ainda nesta parte, foi pedido que se desenvolvesse uma forma de varrimento, baseado no padrão de desenho Visitor, que permitisse 
 efetuar pesquisas, e que obedecesse a determinada estrutura. Ao nível das pesquisas, foi criada a classe "SearchVisitor". Esta 
 permite guardar e obter todos os valores com determinado identificador. O seguinte, nomeado de "ValidationVisitor", permite verificar 
-se o modelo obdece a determinadas regras, como se as variáveis pertecentes à mesma propriedade têm a mesma estrutura.
+se o modelo obedece a determinadas regras, como por exemplo, as variáveis pertencentes à mesma propriedade têm de ter a mesma estrutura.
 
 Em relação à parte seguinte, era pedido que se adicionasse anotações, como forma de adaptar a instanciação. Para isso, foram criadas 
-duas class annotation classes. A primeira, foi denominada de "DoNotInitiate", que tem como objetivo de aplicar a uma determinada propriedade, 
-fazendo com que esta não inicialize como JSON Object. A seguinte, a qual chamamos de "ToString", dá substitui o tipo de variável de uma 
+duas annotation classes. A primeira, foi denominada de "DoNotInitiate", que tem como objetivo de aplicar a uma determinada propriedade, 
+fazendo com que esta não inicialize como JSON Object. A seguinte, a qual chamamos de "ToString", substitui o tipo de variável de uma 
 dada propriedade, inicializando-a como JSONString.
 
 
