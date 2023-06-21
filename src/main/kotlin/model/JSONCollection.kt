@@ -7,6 +7,8 @@ import kotlin.reflect.full.isSuperclassOf
 class JSONCollection(col: Collection<*>) : JSONElement {
     override val value = mutableListOf<JSONElement>()
 
+    private val observers: MutableList<JSONObserver> = mutableListOf()
+
     init{
         iterateInit(col)
     }
@@ -39,16 +41,16 @@ class JSONCollection(col: Collection<*>) : JSONElement {
 
     private fun <T> iteratePrint(col: Iterable<T>): String{
         val iterator: Iterator<T> = col.iterator()
-        val str = StringBuilder().append("[")
+        val str = StringBuilder().append("[\n")
         while(iterator.hasNext()) {
             val next = iterator.next()
             if(!iterator.hasNext()){
-                str.append(next.toString())
+                str.append(next.toString().prependIndent("\t"))
             }else{
-                str.append(next.toString() + ", ")
+                str.append((next.toString() + ",").prependIndent("\t") + "\n")
             }
         }
-        return str.append("]").toString()
+        return str.append("\n]").toString()
     }
 
     override fun toString(): String {
@@ -57,5 +59,28 @@ class JSONCollection(col: Collection<*>) : JSONElement {
 
     override fun accept(v: Visitor) {
         v.visit(this)
+    }
+
+    fun addObserver(observer: JSONObserver) = observers.add(observer)
+
+    fun changeValue(index: Int, newValue: JSONElement){
+        value[index] = newValue
+        observers.forEach {
+            it.update()
+        }
+    }
+
+    fun addValue(newValue: JSONElement){
+        value.add(newValue)
+        observers.forEach {
+            it.update()
+        }
+    }
+
+    fun removeValue(oldValue: JSONElement){
+        value.remove(oldValue)
+        observers.forEach {
+            it.update()
+        }
     }
 }

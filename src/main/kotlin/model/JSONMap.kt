@@ -6,6 +6,8 @@ import kotlin.reflect.full.isSuperclassOf
 class JSONMap(map: Map<*, *>) : JSONElement {
     override val value = LinkedHashMap<String, JSONElement>()
 
+    private val observers: MutableList<JSONObserver> = mutableListOf()
+
     init{
         map.entries.forEach {
             when(it.value){
@@ -31,14 +33,37 @@ class JSONMap(map: Map<*, *>) : JSONElement {
     }
 
     override fun toString(): String {
-        val str = StringBuilder().append("{")
+        val str = StringBuilder().append("{\n")
         value.entries.forEach {
             if(value.keys.indexOf(it.key) != value.size - 1){
-                str.append("\"" + it.key + "\": " + it.value.toString() + ", ")
+                str.append(("\"" + it.key + "\": " + it.value.toString() + ",").prependIndent("\t") + "\n")
             }else{
-                str.append("\"" + it.key + "\": " + it.value.toString())
+                str.append(("\"" + it.key + "\": " + it.value.toString()).prependIndent("\t"))
             }
         }
-        return str.append("}").toString()
+        return str.append("\n}").toString()
+    }
+
+    fun addObserver(observer: JSONObserver) = observers.add(observer)
+
+    fun changeEntry(key: String, newValue: JSONElement){
+        value[key] = newValue
+        observers.forEach {
+            it.update()
+        }
+    }
+
+    fun addEntry(key: String, newValue: JSONElement){
+        value.put(key, newValue)
+        observers.forEach {
+            it.update()
+        }
+    }
+
+    fun removeEntry(key: String){
+        value.remove(key)
+        observers.forEach {
+            it.update()
+        }
     }
 }
