@@ -1,7 +1,8 @@
 package model
 
-//visitor de verificação: obdiência de determinadas regras:
-// como se as variáveis pertecentes à mesma propriedade têm a mesma estrutura
+/*
+Visitor de validação que verifica se a propriedade passada como parâmetro obedece à estrutura do tipo esperado (tipo a comparar passado também como parâmetro)
+*/
 
 import kotlin.reflect.KClass
 

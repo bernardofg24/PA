@@ -1,5 +1,9 @@
 package model
 
+/*
+Interface representativa da estrutura base de um elemento JSON
+*/
+
 interface JSONElement {
     val value: Any
 

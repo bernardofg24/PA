@@ -1,5 +1,9 @@
 package model
 
+/*
+Interface representativa da estrutura de um visitor
+*/
+
 interface Visitor {
     fun visit(o: JSONObj){}
 

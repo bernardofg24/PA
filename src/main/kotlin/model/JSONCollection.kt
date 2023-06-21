@@ -2,17 +2,25 @@ package model
 
 import kotlin.reflect.full.isSuperclassOf
 
-//clase de modelação de variáveis pertencentes à propriedade collection presentes nos JSONs
+/*
+Dada uma lista, a classe faz o parse da mesma para um objeto representativo de uma propriedade JSON
+*/
 
 class JSONCollection(col: Collection<*>) : JSONElement {
     override val value = mutableListOf<JSONElement>()
 
     private val observers: MutableList<JSONObserver> = mutableListOf()
 
+    /*
+    Inicializa o elemento JSON a partir da lista passada aquando da instanciação da classe
+    */
     init{
         iterateInit(col)
     }
 
+    /*
+    Iterador auxiliar à inicialização
+    */
     private fun <T> iterateInit(col: Iterable<T>){
         val iterator: Iterator<T> = col.iterator()
         while(iterator.hasNext()) {
@@ -39,6 +47,9 @@ class JSONCollection(col: Collection<*>) : JSONElement {
         }
     }
 
+    /*
+    Iterador auxiliar à escrita do elemento JSON em String
+    */
     private fun <T> iteratePrint(col: Iterable<T>): String{
         val iterator: Iterator<T> = col.iterator()
         val str = StringBuilder().append("[\n")
@@ -53,16 +64,28 @@ class JSONCollection(col: Collection<*>) : JSONElement {
         return str.append("\n]").toString()
     }
 
+    /*
+    Devolve o elemento JSON em formato de String
+    */
     override fun toString(): String {
         return iteratePrint(value)
     }
 
+    /*
+    Função auxiliar aos Visitors
+    */
     override fun accept(v: Visitor) {
         v.visit(this)
     }
 
+    /*
+    Adiciona um observador sobre o elemento JSON
+    */
     fun addObserver(observer: JSONObserver) = observers.add(observer)
 
+    /*
+    Passados o índice da entrada a alterar e o novo valor como parâmetros, efetua a substituição na estrutura do elemento JSON
+    */
     fun changeValue(index: Int, newValue: JSONElement){
         value[index] = newValue
         observers.forEach {
@@ -70,6 +93,9 @@ class JSONCollection(col: Collection<*>) : JSONElement {
         }
     }
 
+    /*
+    Passado o valor a adicionar como parâmetro, adiciona o mesmo à estrutura do elemento JSON
+    */
     fun addValue(newValue: JSONElement){
         value.add(newValue)
         observers.forEach {
@@ -77,6 +103,9 @@ class JSONCollection(col: Collection<*>) : JSONElement {
         }
     }
 
+    /*
+    Passado o valor a remover como parâmetro, remove o mesmo da estrutura do elemento JSON
+    */
     fun removeValue(oldValue: JSONElement){
         value.remove(oldValue)
         observers.forEach {

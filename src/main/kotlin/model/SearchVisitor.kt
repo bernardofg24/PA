@@ -1,6 +1,10 @@
 package model
 
-//tipo de visitor que obtem e guarda todos os valores com determinado identificador
+/*
+Visitor de pesquisa que:
+    flag == false -> devolve os valores das propriedades passadas como parâmetros
+    flag == true -> devolve os objetos que contém todas as propriedades passadas como parâmetros
+*/
 
 class SearchVisitor(vararg term: String, private val flag: Boolean) : Visitor {
     private val terms = term.toList()

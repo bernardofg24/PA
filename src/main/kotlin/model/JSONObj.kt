@@ -4,7 +4,9 @@ import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.full.hasAnnotation
 import kotlin.reflect.full.isSuperclassOf
 
-//classe de molde e união das outras classes
+/*
+Dado um objeto complexo, a classe faz o parse do mesmo para um objeto representativo da sua estrutura em JSON
+*/
 
 class JSONObj(val obj: Any) : JSONElement {
     override val value = LinkedHashMap<String, JSONElement?>()
@@ -12,6 +14,9 @@ class JSONObj(val obj: Any) : JSONElement {
 
     private val observers: MutableList<JSONObserver> = mutableListOf()
 
+    /*
+    Inicializa o objeto JSON a partir do objeto passado aquando da instanciação da classe
+    */
     init{
         require(obj::class !in types && !Number::class.isSuperclassOf(obj::class) && !Collection::class.isSuperclassOf(obj::class)
                 && !Map::class.isSuperclassOf(obj::class) && !Enum::class.isSuperclassOf(obj::class))
@@ -50,6 +55,9 @@ class JSONObj(val obj: Any) : JSONElement {
         }
     }
 
+    /*
+    Devolve o objeto JSON em formato de String
+    */
     override fun toString(): String {
         val str = StringBuilder().append("{\n")
         value.entries.forEach {
@@ -70,12 +78,21 @@ class JSONObj(val obj: Any) : JSONElement {
         return str.append("\n}").toString()
     }
 
+    /*
+    Função auxiliar aos Visitors
+    */
     override fun accept(v: Visitor) {
         v.visit(this)
     }
 
+    /*
+    Adiciona um observador sobre o objeto JSON
+    */
     fun addObserver(observer: JSONObserver) = observers.add(observer)
 
+    /*
+    Passados o nome da propriedade a alterar e o novo valor como parâmetros, efetua a substituição na estrutura do objeto JSON
+    */
     fun changeProp(prop: String, newValue: JSONElement){
         value[prop] = newValue
         observers.forEach {
@@ -83,6 +100,9 @@ class JSONObj(val obj: Any) : JSONElement {
         }
     }
 
+    /*
+    Passados o nome da propriedade a adicionar e o seu valor como parâmetros, adiciona a mesma à estrutura do objeto JSON
+    */
     fun addProp(name: String, prop: JSONElement){
         value.put(name, prop)
         observers.forEach {
@@ -90,6 +110,9 @@ class JSONObj(val obj: Any) : JSONElement {
         }
     }
 
+    /*
+    Passado o nome da propriedade a remover como parâmetro, remove a mesma da estrutura do objeto JSON
+    */
     fun removeProp(prop: String){
         value.remove(prop)
         observers.forEach {

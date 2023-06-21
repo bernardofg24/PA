@@ -2,12 +2,17 @@ package model
 
 import kotlin.reflect.full.isSuperclassOf
 
-//clase de modelação de variáveis do tipo map presentes nos JSONs
+/*
+Dado um mapa, a classe faz o parse do mesmo para um objeto representativo de uma propriedade JSON
+*/
 class JSONMap(map: Map<*, *>) : JSONElement {
     override val value = LinkedHashMap<String, JSONElement>()
 
     private val observers: MutableList<JSONObserver> = mutableListOf()
 
+    /*
+    Inicializa o elemento JSON a partir do mapa passado aquando da instanciação da classe
+    */
     init{
         map.entries.forEach {
             when(it.value){
@@ -32,6 +37,9 @@ class JSONMap(map: Map<*, *>) : JSONElement {
         }
     }
 
+    /*
+    Devolve o elemento JSON em formato de String
+    */
     override fun toString(): String {
         val str = StringBuilder().append("{\n")
         value.entries.forEach {
@@ -44,8 +52,14 @@ class JSONMap(map: Map<*, *>) : JSONElement {
         return str.append("\n}").toString()
     }
 
+    /*
+    Adiciona um observador sobre o elemento JSON
+    */
     fun addObserver(observer: JSONObserver) = observers.add(observer)
 
+    /*
+    Passados a chave da entrada a alterar e o novo valor como parâmetros, efetua a substituição na estrutura do elemento JSON
+    */
     fun changeEntry(key: String, newValue: JSONElement){
         value[key] = newValue
         observers.forEach {
@@ -53,6 +67,9 @@ class JSONMap(map: Map<*, *>) : JSONElement {
         }
     }
 
+    /*
+    Passados a chave para a nova entrada e o seu valor como parâmetros, adiciona a mesma à estrutura do elemento JSON
+    */
     fun addEntry(key: String, newValue: JSONElement){
         value.put(key, newValue)
         observers.forEach {
@@ -60,6 +77,9 @@ class JSONMap(map: Map<*, *>) : JSONElement {
         }
     }
 
+    /*
+    Passada a chave da entrada a remover como parâmetro, remove a mesma da estrutura do elemento JSON
+    */
     fun removeEntry(key: String){
         value.remove(key)
         observers.forEach {

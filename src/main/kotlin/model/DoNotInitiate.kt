@@ -1,5 +1,7 @@
 package model
 
-//anotação criada aplicada a determinadas propriedades, de maneira a que estas não inicializem como JSON Object
+/*
+Anotação que quando aplicada ignora a propriedade aquando do parsing do objeto do qual a mesma faz parte
+*/
 
 annotation class DoNotInitiate()

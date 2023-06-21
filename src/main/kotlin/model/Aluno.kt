@@ -1,4 +1,7 @@
 package model
 
-//classe criada para teste (documento test.kt), de forma a ser semelhante ao exemplo
+/*
+Classe de teste
+*/
+
 data class Aluno(val numero: Int, val nome: String, val internacional: Boolean){}
