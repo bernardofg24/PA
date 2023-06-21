@@ -1,26 +1,25 @@
-Este trabalho teve como objetivo desenvolver uma biblioteca de produção e edição de dados no formato de JSON.
+Este trabalho teve como objetivo desenvolver uma biblioteca de geração de estruturas JSON a partir de objetos e edição das mesmas.
 
-A primeira parte foi dividida em duas fases. A primeira prendeu-se com o modelo. Para isso, foram criadas várias
-classes para os diferentes tipos de variáveis que o JSON poderia compreender, isto é, array, boolean, char, collections, 
-enum, map, number e string. Todas as classes criadas foram nomeadas de "JSON" seguidas do tipo de variável em questão, 
-por exemplo "JSONBoolean". Estas serviram, nomeadamente, para serem moldadas e unidas num JSON object final, com o nome "JSONObj".
+A biblioteca encontra-se dividida em dois packages:
+    model -> "back-end" do projeto - Trata da conversão de objetos em estruturas JSON e parsing das mesmas para formato String.
+                                     Permite ainda a possibilidade de efetuar pesquisas e validações através de Visitors:
+                                        SearchVisitor (como usar) -> instanciar o visitor; passar um JSONObj à função "visit" do mesmo;
+                                                                     aceder à propriedade "values" do visitor para obter os resultados
+                                        ValidationVisitor (como usar) -> igual ao SearchVisitor mas a propriedade com o resultado
+                                                                         chama-se "bool"
 
-De maneira a testar o código desenvolvido, foi criado o file "test.kt". Para isso, foram ainda criadas as classes "Aluno" 
-e "UC", de maneira a que o resultado final se assemelhasse ao exemplo dado no enunciado da primeira parte.
+    gui -> "front-end" do projeto - Correndo a "main" do ficheiro "Controller" é apresentado um editor de JSON onde é possível efetuar
+                                    as seguintes operações:
+                                        - adicionar e remover propriedades de objetos;
+                                        - trocar o valor de propriedades de objetos;
+                                        - adicionar e remover valores/entradas de arrays e listas/mapas;
+                                        - trocar valores/entradas de arrays e listas/mapas.
+                                    É possível efetuar "Undo" em todos os tipos de operações.
 
-Ainda nesta parte, foi pedido que se desenvolvesse uma forma de varrimento, baseado no padrão de desenho Visitor, que permitisse 
-efetuar pesquisas, e que obedecesse a determinada estrutura. Ao nível das pesquisas, foi criada a classe "SearchVisitor". Esta 
-permite guardar e obter todos os valores com determinado identificador. O seguinte, nomeado de "ValidationVisitor", permite verificar 
-se o modelo obedece a determinadas regras, como por exemplo, as variáveis pertencentes à mesma propriedade têm de ter a mesma estrutura.
+Bugs conhecidos:
+    model:
+        - Nenhum bug documentado mas é possível a sua existência.
 
-Em relação à parte seguinte, era pedido que se adicionasse anotações, como forma de adaptar a instanciação. Para isso, foram criadas 
-duas annotation classes. A primeira, foi denominada de "DoNotInitiate", que tem como objetivo de aplicar a uma determinada propriedade, 
-fazendo com que esta não inicialize como JSON Object. A seguinte, a qual chamamos de "ToString", substitui o tipo de variável de uma 
-dada propriedade, inicializando-a como JSONString.
-
-
-Passando para a segunda parte do projeto, era pedido que o editor tivesse uma aplicação gráfica. Esta seria dividida em duas colunas, a esquerda 
-e a direita. Na primeira é feita a edição dos vários componentes, e na outra, seria feita a projeção textual do modelo JSON, alterada a cada edição. 
-Para isso, foi necessário desenvolver observadores.
-
-
+    gui:
+        - No caso de adições ou remoções, apenas é possível efetuar "Undo" das mesmas se estas tiverem sido a última operação efetuada;
+        - Se remover todos os valores de um array ou lista, o editor bloqueia.
