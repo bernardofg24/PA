@@ -2,6 +2,8 @@ package model
 
 import kotlin.reflect.full.isSuperclassOf
 
+//clase de modelação de variáveis do tipo array presentes nos JSONs
+
 class JSONArray(arr: Array<*>) : JSONElement {
     override val value = arrayListOf<JSONElement>()
 

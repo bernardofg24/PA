@@ -4,6 +4,8 @@ import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.full.hasAnnotation
 import kotlin.reflect.full.isSuperclassOf
 
+//classe de molde e união das outras classes
+
 class JSONObj(val obj: Any) : JSONElement {
     override val value = LinkedHashMap<String, JSONElement?>()
     private val types = listOf(String::class, Boolean::class, Char::class, Array::class)

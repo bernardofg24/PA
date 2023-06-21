@@ -2,6 +2,8 @@ package model
 
 import kotlin.reflect.full.isSuperclassOf
 
+//clase de modelação de variáveis pertencentes à propriedade collection presentes nos JSONs
+
 class JSONCollection(col: Collection<*>) : JSONElement {
     override val value = mutableListOf<JSONElement>()
 
