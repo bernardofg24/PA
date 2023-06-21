@@ -74,8 +74,6 @@ class JSONObj(val obj: Any) : JSONElement {
 
     fun addObserver(observer: JSONObserver) = observers.add(observer)
 
-    fun removeObserver() = observers.removeLast()
-
     fun changeProp(prop: String, newValue: JSONElement){
         value[prop] = newValue
         observers.forEach {
