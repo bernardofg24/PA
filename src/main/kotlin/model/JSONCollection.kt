@@ -5,6 +5,8 @@ import kotlin.reflect.full.isSuperclassOf
 class JSONCollection(col: Collection<*>) : JSONElement {
     override val value = mutableListOf<JSONElement>()
 
+    private val observers: MutableList<JSONObserver> = mutableListOf()
+
     init{
         iterateInit(col)
     }
@@ -55,5 +57,28 @@ class JSONCollection(col: Collection<*>) : JSONElement {
 
     override fun accept(v: Visitor) {
         v.visit(this)
+    }
+
+    fun addObserver(observer: JSONObserver) = observers.add(observer)
+
+    fun changeValue(index: Int, newValue: JSONElement){
+        value[index] = newValue
+        observers.forEach {
+            it.update()
+        }
+    }
+
+    fun addValue(newValue: JSONElement){
+        value.add(newValue)
+        observers.forEach {
+            it.update()
+        }
+    }
+
+    fun removeValue(oldValue: JSONElement){
+        value.remove(oldValue)
+        observers.forEach {
+            it.update()
+        }
     }
 }

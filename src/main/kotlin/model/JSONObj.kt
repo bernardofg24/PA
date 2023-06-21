@@ -74,28 +74,26 @@ class JSONObj(val obj: Any) : JSONElement {
 
     fun addObserver(observer: JSONObserver) = observers.add(observer)
 
-    fun changeProp(prop: String, newValue: Any){
-        when(newValue){
-            is String -> value[prop] = JSONString(newValue)
-            is Boolean -> value[prop] = JSONBoolean(newValue)
-            is Char -> value[prop] = JSONChar(newValue)
-            is Array<*> -> value[prop] = JSONArray(newValue)
-            else -> {
-                if(Number::class.isSuperclassOf(newValue::class)){
-                    value[prop] = JSONNumber(newValue as Number)
-                }else if(Collection::class.isSuperclassOf(newValue::class)) {
-                    value[prop] = JSONCollection(newValue as Collection<*>)
-                }else if(Map::class.isSuperclassOf(newValue::class)){
-                    value[prop] = JSONMap(newValue as Map<*, *>)
-                }else if(Enum::class.isSuperclassOf(newValue::class)){
-                    value[prop] = JSONEnum(newValue as Enum<*>)
-                }else{
-                    value[prop] = JSONObj(newValue)
-                }
-            }
-        }
+    fun removeObserver() = observers.removeLast()
+
+    fun changeProp(prop: String, newValue: JSONElement){
+        value[prop] = newValue
         observers.forEach {
-            it.propChanged()
+            it.update()
+        }
+    }
+
+    fun addProp(name: String, prop: JSONElement){
+        value.put(name, prop)
+        observers.forEach {
+            it.update()
+        }
+    }
+
+    fun removeProp(prop: String){
+        value.remove(prop)
+        observers.forEach {
+            it.update()
         }
     }
 }

@@ -5,6 +5,8 @@ import kotlin.reflect.full.isSuperclassOf
 class JSONMap(map: Map<*, *>) : JSONElement {
     override val value = LinkedHashMap<String, JSONElement>()
 
+    private val observers: MutableList<JSONObserver> = mutableListOf()
+
     init{
         map.entries.forEach {
             when(it.value){
@@ -39,5 +41,28 @@ class JSONMap(map: Map<*, *>) : JSONElement {
             }
         }
         return str.append("\n}").toString()
+    }
+
+    fun addObserver(observer: JSONObserver) = observers.add(observer)
+
+    fun changeEntry(key: String, newValue: JSONElement){
+        value[key] = newValue
+        observers.forEach {
+            it.update()
+        }
+    }
+
+    fun addEntry(key: String, newValue: JSONElement){
+        value.put(key, newValue)
+        observers.forEach {
+            it.update()
+        }
+    }
+
+    fun removeEntry(key: String){
+        value.remove(key)
+        observers.forEach {
+            it.update()
+        }
     }
 }
