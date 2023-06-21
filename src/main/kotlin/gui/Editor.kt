@@ -10,6 +10,7 @@ import java.awt.event.FocusEvent
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import javax.swing.*
+import kotlin.math.E
 
 class Editor(val model: JSONObj) {
     val frame = frame()
@@ -92,6 +93,9 @@ class Editor(val model: JSONObj) {
                 add(JLabel(it.key))
                 val p = it.value
                 when(p){
+                    is JSONObj -> {
+                        add(objPanel(p))
+                    }
                     is JSONBoolean -> {
                         val panel =
                             JPanel().apply {
@@ -741,7 +745,7 @@ class Editor(val model: JSONObj) {
     fun addPropPrompt(msg: String, first: String, second: String): Pair<String, JSONElement>? {
         val firstField = JTextField(5)
 
-        val options = arrayOf("String", "Char", "Number", "Boolean")
+        val options = arrayOf("String", "Char", "Number", "Boolean", "Object")
         val secondField = JComboBox(options)
 
         val myPanel = JPanel()
@@ -768,6 +772,8 @@ class Editor(val model: JSONObj) {
                     JSONNumber(0)
                 }else if(selected == "Boolean") {
                     JSONBoolean(false)
+                }else if(selected == "Object"){
+                    JSONObj(EmptyObj("NEW OBJECT"))
                 }else{
                     null
                 }
